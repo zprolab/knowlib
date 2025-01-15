@@ -11,6 +11,33 @@ import shlex
 import hashlib
 
 COMMON_BASE_DIR = "./dynamic"
+MAIN_HELP = \
+"""
+Knowlib System Command List:
+    User Commands:
+        register <username> <password>        - Register a new user.
+        login <username> <password>           - Login to your account.
+        add <title> <author>                  - Add a book to your library.
+        search <keyword>                      - Search books in your library.
+        delete <title>                        - Delete a book from your library.
+        list                                  - List all books in your library.
+    
+    Public Library Commands:
+        add_public <title> <author>           - Add a book to the public library.
+        search_public <keyword>               - Search books in the public library.
+        delete_public <title>                 - Delete a book from the public library.
+        list_public                           - List all books in the public library.
+
+    Admin Commands:
+        admin_login <password>                - Login as an admin.
+        list_users                            - List all registered users.
+        view_user_library <username>          - View a user's library (Admin only).
+        delete_user <username>                - Delete a user and their library.
+
+    General Commands:
+        help                                  - Show this help message.
+        exit                                  - Exit the system.
+"""
 
 if not os.path.exists(COMMON_BASE_DIR):
     os.mkdir(COMMON_BASE_DIR)
@@ -219,31 +246,7 @@ class LibraryShell:
         self.running = True
 
     def show_help(self, *args):
-        help_text = """Library System Command List:
-    User Commands:
-        register <username> <password>        - Register a new user.
-        login <username> <password>           - Login to your account.
-        add <title> <author>                  - Add a book to your library.
-        search <keyword>                      - Search books in your library.
-        delete <title>                        - Delete a book from your library.
-        list                                  - List all books in your library.
-    
-    Public Library Commands:
-        add_public <title> <author>           - Add a book to the public library.
-        search_public <keyword>               - Search books in the public library.
-        delete_public <title>                 - Delete a book from the public library.
-        list_public                           - List all books in the public library.
-
-    Admin Commands:
-        admin_login <password>                - Login as an admin.
-        list_users                            - List all registered users.
-        view_user_library <username>          - View a user's library (Admin only).
-        delete_user <username>                - Delete a user and their library.
-
-    General Commands:
-        help                                  - Show this help message.
-        exit                                  - Exit the system.
-        """
+        help_text = MAIN_HELP[:]
         return help_text.strip()
 
 
