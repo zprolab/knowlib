@@ -378,10 +378,7 @@ Library System Command List:
                     print(f"Unknown command: \"{command}\". Type \"help\" for assistance.")
             except Exception as e:
                 print(f"Error: {e}")
-            finally: 
-                self.exit_shell()
-        else:
-            self.exit_shell()
+                
 
 
 if __name__ == "__main__":
