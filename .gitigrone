@@ -1,2 +1,7 @@
 dynamic/
 dynamic/*
+dynamic/*.json
+
+dynamic/admin_data.json
+dynamic/library_data.json
+dynamic/public_library_data.json
