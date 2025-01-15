@@ -225,6 +225,7 @@ class LibraryShell:
         self.admin_mode = False
         self.current_library = None
         self.public_library = PublicLibrary()  # Initialize public library
+        self.username = None
         self.commands = {
             "register": self.register_user,
             "login": self.login_user,
@@ -263,6 +264,7 @@ class LibraryShell:
         result = self.user_manager.login_user(username, password)
         if "successfully" in result:
             self.current_library = self.user_manager.get_current_library()
+            self.username = args[0]
         return result
 
     def admin_login(self, *args):
@@ -271,7 +273,7 @@ class LibraryShell:
         password = args[0]
         if self.admin_manager.authenticate_root(password):
             self.admin_mode = True
-            return "Admin logged in successfully. You now have full access to all users and their libraries."
+            return "Admin mode set successfully. You now have full access to all users and their libraries."
         return "Invalid root password."
 
     def list_all_users(self, *args):
@@ -368,7 +370,9 @@ class LibraryShell:
         print("Type 'help' for a list of commands.")
         while self.running:
             try:
-                user_input = input("Library> ").strip()
+                sig = "#" if self.admin_mode else "$"
+                username_disp = "unlogined" if self.username is None else self.username 
+                user_input = input(f"[knowlib@{username_disp}]{sig} ").strip()
                 if not user_input:
                     continue
                 args = shlex.split(user_input)
