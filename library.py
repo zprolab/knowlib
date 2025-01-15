@@ -219,8 +219,7 @@ class LibraryShell:
         self.running = True
 
     def show_help(self, *args):
-        help_text = """
-Library System Command List:
+        help_text = """Library System Command List:
     User Commands:
         register <username> <password>        - Register a new user.
         login <username> <password>           - Login to your account.
@@ -378,7 +377,7 @@ Library System Command List:
                     print(f"Unknown command: \"{command}\". Type \"help\" for assistance.")
             except Exception as e:
                 print(f"Error: {e}")
-                
+
 
 
 if __name__ == "__main__":
