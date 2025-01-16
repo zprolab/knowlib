@@ -6,6 +6,7 @@
 #                                               |___/                          |___/                                                      
 
 import os
+import sys
 import json
 import shlex
 import hashlib
@@ -38,6 +39,10 @@ Knowlib System Command List:
         help                                  - Show this help message.
         exit                                  - Exit the system.
 """
+LINEFEED = "\r\n" if sys.platform.startswith('win') \
+    else "\n" if sys.platform.startswith('linux') \
+    else "\n" if sys.platform.startswith('darwin') \
+    else "\x0A"
 
 if not os.path.exists(COMMON_BASE_DIR):
     os.mkdir(COMMON_BASE_DIR)
@@ -53,7 +58,10 @@ class Library:
     def search_books(self, keyword):
         results = [book for book in self.books if keyword.lower() in book["title"].lower()]
         if results:
-            return "\n".join([f"{idx + 1}. {book['title']} by {book['author']}" for idx, book in enumerate(results)])
+            return "\n".join(
+                [f"{idx + 1}. {book['title']} by {book['author']}" \
+                for idx, book in enumerate(results)]
+            )
         return "No books found matching your search."
 
     def delete_book(self, title):
@@ -66,7 +74,10 @@ class Library:
     def list_books(self):
         if not self.books:
             return "No books available in your library."
-        return "\n".join([f"{idx + 1}. {book['title']} by {book['author']}" for idx, book in enumerate(self.books)])
+        return "\n".join(
+            [f"{idx + 1}. {book['title']} by {book['author']}" \
+            for idx, book in enumerate(self.books)]
+        )
 
 
 class PublicLibrary:
@@ -101,7 +112,10 @@ class PublicLibrary:
     def search_public_books(self, keyword):
         results = [book for book in self.public_books if keyword.lower() in book["title"].lower()]
         if results:
-            return "\n".join([f"{idx + 1}. {book['title']} by {book['author']}" for idx, book in enumerate(results)])
+            return "\n".join(
+                [f"{idx + 1}. {book['title']} by {book['author']}" \
+                for idx, book in enumerate(results)]
+            )
         return "No public books found matching your search."
 
     def delete_public_book(self, title):
@@ -114,7 +128,10 @@ class PublicLibrary:
     def list_public_books(self):
         if not self.public_books:
             return "No books available in the public library."
-        return "\n".join([f"{idx + 1}. {book['title']} by {book['author']}" for idx, book in enumerate(self.public_books)])
+        return "\n".join(
+            [f"{idx + 1}. {book['title']} by {book['author']}" \
+            for idx, book in enumerate(self.public_books)]
+        )
 
 
 class UserManager:
@@ -273,7 +290,11 @@ class LibraryShell:
         password = args[0]
         if self.admin_manager.authenticate_root(password):
             self.admin_mode = True
-            return "Admin mode set successfully. You now have full access to all users and their libraries."
+            admin_logged_in_warn = \
+                "WARNING! Admin mode set successfully. " + LINEFEED + \
+                "You now have full access to all users and their libraries. " + LINEFEED + \
+                "You may harm your system, so be CAREFUL!"
+            return admin_logged_in_warn.strip()
         return "Invalid root password."
 
     def list_all_users(self, *args):
@@ -295,7 +316,10 @@ class LibraryShell:
         user_books = self.user_manager.users[username]["books"]
         if not user_books:
             return f"No books in {username}'s library."
-        return "\n".join([f"{idx + 1}. {book['title']} by {book['author']}" for idx, book in enumerate(user_books)])
+        return "\n".join(
+            [f"{idx + 1}. {book['title']} by {book['author']}" \
+            for idx, book in enumerate(user_books)]
+        )
 
     def delete_user(self, *args):
         if not self.admin_mode:
@@ -371,7 +395,7 @@ class LibraryShell:
         while self.running:
             try:
                 sig = "#" if self.admin_mode else "$"
-                username_disp = "unlogined" if self.username is None else self.username 
+                username_disp = "public" if self.username is None else self.username 
                 user_input = input(f"[knowlib@{username_disp}]{sig} ").strip()
                 if not user_input:
                     continue
@@ -384,7 +408,6 @@ class LibraryShell:
                     print(f"Unknown command: \"{command}\". Type \"help\" for assistance.")
             except Exception as e:
                 print(f"Error: {e}")
-
 
 
 if __name__ == "__main__":
