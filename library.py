@@ -410,6 +410,33 @@ class LibraryShell:
                 print(f"Error: {e}")
 
 
+class CliApp:
+    def __init__(self, _init_args=None):
+        self.shell = LibraryShell()
+    
+    def cli(self, _argv):
+        # library.py
+        if len(_argv) == 1: 
+            self.shell.run()
+
+        # library.py command
+        elif len(_argv) == 2:
+            if _argv[1] == 'help':    
+                print(MAIN_HELP)
+            elif _argv[1] == 'shell': 
+                self.shell.run()
+            
+            # TODO: Full-Featured Command Support...
+            else: print(
+                f"Unknow command: \"{_argv[1]}\". " + \
+                f"To run a shell command, please use \"library.py shell {_argv[1]}\""
+            )
+
+        # library.py command param1 [param2[...]]
+        else:
+            print(self.shell.commands[_argv[1]](*_argv[2:]))
+
 if __name__ == "__main__":
-    shell = LibraryShell()
-    shell.run()
+    app = CliApp()
+    app.cli(sys.argv)
+
