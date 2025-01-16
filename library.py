@@ -1,9 +1,9 @@
-#    _  __                    _ _ _       ____           ____ _                                  
-#   | |/ /_ __   _____      _| (_) |__   | __ ) _   _   / ___| |__   ___ _ __  _   _ _   _ _ __  
-#   | ' /| '_ \ / _ \ \ /\ / / | | '_ \  |  _ \| | | | | |   | '_ \ / _ \ '_ \| | | | | | | '_ \ 
+#    _  __                    _ _ _       ____           ____ _
+#   | |/ /_ __   _____      _| (_) |__   | __ ) _   _   / ___| |__   ___ _ __  _   _ _   _ _ __
+#   | ' /| '_ \ / _ \ \ /\ / / | | '_ \  |  _ \| | | | | |   | '_ \ / _ \ '_ \| | | | | | | '_ \
 #   | . \| | | | (_) \ V  V /| | | |_) | | |_) | |_| | | |___| | | |  __/ | | | |_| | |_| | | | |
 #   |_|\_\_| |_|\___/ \_/\_/ |_|_|_.__/  |____/ \__, |  \____|_| |_|\___|_| |_|\__, |\__,_|_| |_|
-#                                               |___/                          |___/                                                      
+#                                               |___/                          |___/
 
 import os
 import sys
@@ -12,8 +12,7 @@ import shlex
 import hashlib
 
 COMMON_BASE_DIR = "./dynamic"
-MAIN_HELP = \
-"""
+MAIN_HELP = """
 Knowlib System Command List:
     User Commands:
         register <username> <password>        - Register a new user.
@@ -39,13 +38,19 @@ Knowlib System Command List:
         help                                  - Show this help message.
         exit                                  - Exit the system.
 """
-LINEFEED = "\r\n" if sys.platform.startswith('win') \
-    else "\n" if sys.platform.startswith('linux') \
-    else "\n" if sys.platform.startswith('darwin') \
-    else "\x0A"
+LINEFEED = (
+    "\r\n"
+    if sys.platform.startswith("win")
+    else (
+        "\n"
+        if sys.platform.startswith("linux")
+        else "\n" if sys.platform.startswith("darwin") else "\x0A"
+    )
+)
 
 if not os.path.exists(COMMON_BASE_DIR):
     os.mkdir(COMMON_BASE_DIR)
+
 
 class Library:
     def __init__(self):
@@ -53,14 +58,18 @@ class Library:
 
     def add_book(self, title, author):
         self.books.append({"title": title, "author": author})
-        return f"Book '{title}' by {author} added successfully."
+        return f'Book "{title}" by {author} added successfully.'
 
     def search_books(self, keyword):
-        results = [book for book in self.books if keyword.lower() in book["title"].lower()]
+        results = [
+            book for book in self.books if keyword.lower() in book["title"].lower()
+        ]
         if results:
             return "\n".join(
-                [f"{idx + 1}. {book['title']} by {book['author']}" \
-                for idx, book in enumerate(results)]
+                [
+                    f"{idx + 1}. {book['title']} by {book['author']}"
+                    for idx, book in enumerate(results)
+                ]
             )
         return "No books found matching your search."
 
@@ -68,15 +77,17 @@ class Library:
         for book in self.books:
             if book["title"].lower() == title.lower():
                 self.books.remove(book)
-                return f"Book '{title}' removed successfully."
-        return f"Book '{title}' not found."
+                return f'Book "{title}" removed successfully.'
+        return f'Book "{title}" not found.'
 
     def list_books(self):
         if not self.books:
             return "No books available in your library."
         return "\n".join(
-            [f"{idx + 1}. {book['title']} by {book['author']}" \
-            for idx, book in enumerate(self.books)]
+            [
+                f"{idx + 1}. {book['title']} by {book['author']}"
+                for idx, book in enumerate(self.books)
+            ]
         )
 
 
@@ -84,6 +95,7 @@ class PublicLibrary:
     """
     Public library pool shared by all users.
     """
+
     DATA_FILE = os.path.join(COMMON_BASE_DIR, "public_library_data.json")
 
     def __init__(self):
@@ -107,14 +119,20 @@ class PublicLibrary:
 
     def add_public_book(self, title, author):
         self.public_books.append({"title": title, "author": author})
-        return f"Book '{title}' by {author} added to the public library."
+        return f'Book "{title}" by {author} added to the public library.'
 
     def search_public_books(self, keyword):
-        results = [book for book in self.public_books if keyword.lower() in book["title"].lower()]
+        results = [
+            book
+            for book in self.public_books
+            if keyword.lower() in book["title"].lower()
+        ]
         if results:
             return "\n".join(
-                [f"{idx + 1}. {book['title']} by {book['author']}" \
-                for idx, book in enumerate(results)]
+                [
+                    f"{idx + 1}. {book['title']} by {book['author']}"
+                    for idx, book in enumerate(results)
+                ]
             )
         return "No public books found matching your search."
 
@@ -122,15 +140,17 @@ class PublicLibrary:
         for book in self.public_books:
             if book["title"].lower() == title.lower():
                 self.public_books.remove(book)
-                return f"Book '{title}' removed from the public library."
-        return f"Book '{title}' not found in the public library."
+                return f'Book "{title}" removed from the public library.'
+        return f'Book "{title}" not found in the public library.'
 
     def list_public_books(self):
         if not self.public_books:
             return "No books available in the public library."
         return "\n".join(
-            [f"{idx + 1}. {book['title']} by {book['author']}" \
-            for idx, book in enumerate(self.public_books)]
+            [
+                f"{idx + 1}. {book['title']} by {book['author']}"
+                for idx, book in enumerate(self.public_books)
+            ]
         )
 
 
@@ -138,6 +158,7 @@ class UserManager:
     """
     A user management system with password authentication.
     """
+
     DATA_FILE = os.path.join(COMMON_BASE_DIR, "library_data.json")
 
     def __init__(self):
@@ -162,21 +183,18 @@ class UserManager:
 
     def register_user(self, username, password):
         if username in self.users:
-            return f"User '{username}' already exists."
-        self.users[username] = {
-            "password": self.hash_password(password),
-            "books": []
-        }
-        return f"User '{username}' registered successfully."
+            return f'User "{username}" already exists.'
+        self.users[username] = {"password": self.hash_password(password), "books": []}
+        return f'User "{username}" registered successfully.'
 
     def login_user(self, username, password):
         if username not in self.users:
-            return f"User '{username}' does not exist. Please register first."
+            return f'User "{username}" does not exist. Please register first.'
         hashed_password = self.hash_password(password)
         if self.users[username]["password"] != hashed_password:
             return "Invalid password. Please try again."
         self.current_user = username
-        return f"User '{username}' logged in successfully."
+        return f'User "{username}" logged in successfully.'
 
     def get_current_library(self):
         if not self.current_user:
@@ -188,6 +206,7 @@ class AdministratorManager:
     """
     Manages the root/admin password and provides highest-level access to all user data.
     """
+
     ROOT_FILE = os.path.join(COMMON_BASE_DIR, "admin_data.json")
 
     def __init__(self):
@@ -267,7 +286,6 @@ class LibraryShell:
         help_text = MAIN_HELP[:]
         return help_text.strip()
 
-
     def register_user(self, *args):
         if len(args) < 2:
             return "Usage: register <username> <password>"
@@ -290,10 +308,13 @@ class LibraryShell:
         password = args[0]
         if self.admin_manager.authenticate_root(password):
             self.admin_mode = True
-            admin_logged_in_warn = \
-                "WARNING! Admin mode set successfully. " + LINEFEED + \
-                "You now have full access to all users and their libraries. " + LINEFEED + \
-                "You may harm your system, so be CAREFUL!"
+            admin_logged_in_warn = (
+                "WARNING! Admin mode set successfully. "
+                + LINEFEED
+                + "You now have full access to all users and their libraries. "
+                + LINEFEED
+                + "You may harm your system, so be CAREFUL!"
+            )
             return admin_logged_in_warn.strip()
         return "Invalid root password."
 
@@ -303,7 +324,9 @@ class LibraryShell:
         users = self.user_manager.users
         if not users:
             return "No users registered."
-        return "\n".join([f"{idx + 1}. {user}" for idx, user in enumerate(users.keys())])
+        return "\n".join(
+            [f"{idx + 1}. {user}" for idx, user in enumerate(users.keys())]
+        )
 
     def view_user_library(self, *args):
         if not self.admin_mode:
@@ -312,13 +335,15 @@ class LibraryShell:
             return "Usage: view_user_library <username>"
         username = args[0]
         if username not in self.user_manager.users:
-            return f"User '{username}' does not exist."
+            return f'User "{username}" does not exist.'
         user_books = self.user_manager.users[username]["books"]
         if not user_books:
-            return f"No books in {username}'s library."
+            return f'No books in {username}"s library.'
         return "\n".join(
-            [f"{idx + 1}. {book['title']} by {book['author']}" \
-            for idx, book in enumerate(user_books)]
+            [
+                f"{idx + 1}. {book['title']} by {book['author']}"
+                for idx, book in enumerate(user_books)
+            ]
         )
 
     def delete_user(self, *args):
@@ -328,9 +353,9 @@ class LibraryShell:
             return "Usage: delete_user <username>"
         username = args[0]
         if username not in self.user_manager.users:
-            return f"User '{username}' does not exist."
+            return f'User "{username}" does not exist.'
         del self.user_manager.users[username]
-        return f"User '{username}' and their library have been deleted."
+        return f'User "{username}" and their library have been deleted.'
 
     def add_book(self, *args):
         if not self.current_library:
@@ -395,7 +420,7 @@ class LibraryShell:
         while self.running:
             try:
                 sig = "#" if self.admin_mode else "$"
-                username_disp = "public" if self.username is None else self.username 
+                username_disp = "public" if self.username is None else self.username
                 user_input = input(f"[knowlib@{username_disp}]{sig} ").strip()
                 if not user_input:
                     continue
@@ -405,7 +430,7 @@ class LibraryShell:
                     result = self.commands[command](*params)
                     print(result)
                 else:
-                    print(f"Unknown command: \"{command}\". Type \"help\" for assistance.")
+                    print(f'Unknown command: "{command}". Type "help" for assistance.')
             except Exception as e:
                 print(f"Error: {e}")
 
@@ -413,30 +438,31 @@ class LibraryShell:
 class CliApp:
     def __init__(self, _init_args=None):
         self.shell = LibraryShell()
-    
+
     def cli(self, _argv):
         # library.py
-        if len(_argv) == 1: 
+        if len(_argv) == 1:
             self.shell.run()
 
         # library.py command
         elif len(_argv) == 2:
-            if _argv[1] == 'help':    
+            if _argv[1] == "help":
                 print(MAIN_HELP)
-            elif _argv[1] == 'shell': 
+            elif _argv[1] == "shell":
                 self.shell.run()
-            
+
             # TODO: Full-Featured Command Support...
-            else: print(
-                f"Unknow command: \"{_argv[1]}\". " + \
-                f"To run a shell command, please use \"library.py shell {_argv[1]}\""
-            )
+            else:
+                print(
+                    f'Unknow command: "{_argv[1]}". '
+                    + f'To run a shell command, please use "library.py shell {_argv[1]}"'
+                )
 
         # library.py command param1 [param2[...]]
         else:
             print(self.shell.commands[_argv[2]](*_argv[3:]))
 
+
 if __name__ == "__main__":
     app = CliApp()
     app.cli(sys.argv)
-
