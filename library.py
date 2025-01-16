@@ -434,7 +434,7 @@ class CliApp:
 
         # library.py command param1 [param2[...]]
         else:
-            print(self.shell.commands[_argv[1]](*_argv[2:]))
+            print(self.shell.commands[_argv[2]](*_argv[3:]))
 
 if __name__ == "__main__":
     app = CliApp()
