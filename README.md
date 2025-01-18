@@ -40,7 +40,7 @@ The Intelligent Multi-User Library Platform is a Python-based application that a
 
 2. Run the program:
    ```bash
-   python library_platform.py
+   python library.py [...]
    ```
 
 3. On the first run, you will be prompted to set up an admin/root password.
